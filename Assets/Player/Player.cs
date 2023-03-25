@@ -31,17 +31,11 @@ public class Player : MonoBehaviour
         return new Vector2Int(direction.y, -direction.x) * turnRight;
     }
 
-    // 向いていない向きをマスにスナップする
-    private Vector3 SnapToGrid(Vector3 position, Vector2Int direction)
+    // マスにスナップする
+    private Vector3 SnapToGrid(Vector3 position)
     {
-        if (direction.x == 0)
-        {
-            position.x = Mathf.Round(position.x / baseGrid.cellSize.x) * baseGrid.cellSize.x;
-        }
-        if (direction.y == 0)
-        {
-            position.y = Mathf.Round(position.y / baseGrid.cellSize.y) * baseGrid.cellSize.y;
-        }
+        position.x = Mathf.Round(position.x / baseGrid.cellSize.x) * baseGrid.cellSize.x;
+        position.y = Mathf.Round(position.y / baseGrid.cellSize.y) * baseGrid.cellSize.y;
         return position;
     }
 
@@ -68,34 +62,34 @@ public class Player : MonoBehaviour
         var oldPos = transform.position;
         var newPos = oldPos + new Vector3(direction.x, direction.y, 0) * (Time.deltaTime * speed);
 
-        // 内側の角に到達したら
-        TileBase innerTile = GetSideTile(newPos, turnRight);
-        if (currentTile != innerTile)
+        // 外側の角に到達したら
+        TileBase outerTile = GetSideTile(newPos, turnRight);
+        if (currentTile != outerTile)
         {
             // 90度向きを変える
             direction = Rotate90(direction, turnRight);
             // 向いていない方向をマスにスナップする
-            newPos = SnapToGrid(newPos, direction);
+            newPos = SnapToGrid(newPos);
         }
-        // 外側の角に到達したら
-        TileBase outerTile = GetSideTile(newPos, -turnRight);
-        if (currentTile == outerTile)
+        // 内側の角に到達したら
+        TileBase innerTile = GetSideTile(newPos, -turnRight);
+        if (currentTile == innerTile)
         {
             // 90度向きを変える
             direction = Rotate90(direction, -turnRight);
             // 向いていない方向をマスにスナップする
-            newPos = SnapToGrid(newPos, direction);
+            newPos = SnapToGrid(newPos);
         }
 
         // スペースキー押したら
         if (Input.GetButtonDown("Jump"))
         {
-            if (outerTile != null)
+            if (innerTile != null)
             {
                 // 回転を反転
                 turnRight *= -1;
                 // 角に到達したタイルを保存
-                currentTile = outerTile;
+                currentTile = innerTile;
             }
         }
 
