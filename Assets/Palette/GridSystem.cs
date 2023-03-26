@@ -6,28 +6,13 @@ using UnityEngine.Tilemaps;
 public class GridSystem : MonoBehaviour
 {
     // グリッド
-    [InspectorName("グリッド")]
     public Grid baseGrid;
 
     // タイルマップ
-    [InspectorName("タイルマップ")]
     public Tilemap baseTilemap;
 
     // オーバーレイタイルマップ
-    [InspectorName("オーバーレイタイルマップ")]
     public Tilemap overlayTilemap;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     // マスにスナップする
     public Vector3 SnapToGrid(Vector3 position)

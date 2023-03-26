@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 // プレイヤー
 public class Player : MonoBehaviour
 {
     // グリッド
-    [SerializeField, InspectorName("グリッド")]
-    private GridSystem grid;
+    public GridSystem grid;
+
+    // ライングリッド
+    public LineGridSystem line;
 
     // 速度
-    [SerializeField, InspectorName("速度")]
-    private float speed = 1.0f;
+    public float speed = 1.0f;
 
     // 現在のタイル
     private TileBase currentTile;
@@ -60,35 +62,43 @@ public class Player : MonoBehaviour
         var oldPos = transform.position;
         var newPos = oldPos + new Vector3(direction.x, direction.y, 0) * (Time.deltaTime * speed);
 
-        // 外側の角に到達したら
-        TileBase outerTile = grid.baseTilemap.GetTile(GetSideCell(newPos, turnRight));
-        if (currentTile != outerTile)
+        // 内側、外側
+        Vector3Int innerCell = GetSideCell(newPos, turnRight);
+        TileBase innerTile = grid.baseTilemap.GetTile(innerCell);
+        Vector3Int outerCell = GetSideCell(newPos, -turnRight);
+        TileBase outerTile = grid.baseTilemap.GetTile(outerCell);
+
+        // 内側の角に到達したら
+        if (currentTile != innerTile)
         {
             // 90度向きを変える
             direction = Rotate90(direction, turnRight);
             // 向いていない方向をマスにスナップする
             newPos = grid.SnapToGrid(newPos);
         }
-        // 内側の角に到達したら
-        Vector3Int innerCell = GetSideCell(newPos, -turnRight);
-        TileBase innerTile = grid.baseTilemap.GetTile(innerCell);
-        if (currentTile == innerTile)
+        // 外側の角に到達したら
+        else if (currentTile == outerTile)
         {
             // 90度向きを変える
             direction = Rotate90(direction, -turnRight);
             // 向いていない方向をマスにスナップする
             newPos = grid.SnapToGrid(newPos);
         }
+        else
+        {
+            // 内側に線を追加する
+            line.DrawLine((Vector2Int)innerCell, Rotate90(direction, -turnRight));
+        }
 
         // スペースキー押したら
         if (Input.GetButtonDown("Jump"))
         {
-            if (innerTile != null)
+            if (outerTile != null)
             {
                 // 回転を反転
                 turnRight *= -1;
                 // 現在のタイルを選択
-                SelectCurrentCell(innerCell);
+                SelectCurrentCell(outerCell);
             }
         }
 
