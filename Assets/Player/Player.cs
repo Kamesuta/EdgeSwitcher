@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// プレイヤー
 public class Player : MonoBehaviour
 {
     // グリッド
     [SerializeField, InspectorName("グリッド")]
-    private Grid baseGrid;
-
-    // タイルマップ
-    [SerializeField, InspectorName("タイルマップ")]
-    private Tilemap baseTilemap;
+    private GridSystem grid;
 
     // 速度
     [SerializeField, InspectorName("速度")]
@@ -31,28 +28,29 @@ public class Player : MonoBehaviour
         return new Vector2Int(direction.y, -direction.x) * turnRight;
     }
 
-    // マスにスナップする
-    private Vector3 SnapToGrid(Vector3 position)
+    // サイドのタイルを取得する
+    private Vector3Int GetSideCell(Vector3 position, int turnRight)
     {
-        position.x = Mathf.Round(position.x / baseGrid.cellSize.x) * baseGrid.cellSize.x;
-        position.y = Mathf.Round(position.y / baseGrid.cellSize.y) * baseGrid.cellSize.y;
-        return position;
+        var offset = ((Vector3)(Vector3Int)Rotate90(direction, turnRight)) * (grid.baseGrid.cellSize.magnitude / 2f);
+        var pos = grid.baseGrid.WorldToCell(position + offset);
+        return pos;
     }
 
-    // サイドのタイルを取得する
-    private TileBase GetSideTile(Vector3 position, int turnRight)
+    // 現在のセルを選択
+    private void SelectCurrentCell(Vector3Int cell)
     {
-        var offset = ((Vector3)(Vector3Int)Rotate90(direction, turnRight)) * (baseGrid.cellSize.magnitude / 2f);
-        var pos = baseGrid.WorldToCell(position + offset);
-        var tile = baseTilemap.GetTile(pos);
-        return tile;
+        // 角に到達したタイルを保存
+        currentTile = grid.baseTilemap.GetTile(cell);
+        // 乗っているタイルの塊を選択する
+        grid.SelectCluster(currentTile, cell);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        // 現在のタイルを保存
-        currentTile = GetSideTile(transform.position, turnRight);
+        // 現在のタイルを選択
+        Vector3Int currentCell = GetSideCell(transform.position, turnRight);
+        SelectCurrentCell(currentCell);
     }
 
     // Update is called once per frame
@@ -63,22 +61,23 @@ public class Player : MonoBehaviour
         var newPos = oldPos + new Vector3(direction.x, direction.y, 0) * (Time.deltaTime * speed);
 
         // 外側の角に到達したら
-        TileBase outerTile = GetSideTile(newPos, turnRight);
+        TileBase outerTile = grid.baseTilemap.GetTile(GetSideCell(newPos, turnRight));
         if (currentTile != outerTile)
         {
             // 90度向きを変える
             direction = Rotate90(direction, turnRight);
             // 向いていない方向をマスにスナップする
-            newPos = SnapToGrid(newPos);
+            newPos = grid.SnapToGrid(newPos);
         }
         // 内側の角に到達したら
-        TileBase innerTile = GetSideTile(newPos, -turnRight);
+        Vector3Int innerCell = GetSideCell(newPos, -turnRight);
+        TileBase innerTile = grid.baseTilemap.GetTile(innerCell);
         if (currentTile == innerTile)
         {
             // 90度向きを変える
             direction = Rotate90(direction, -turnRight);
             // 向いていない方向をマスにスナップする
-            newPos = SnapToGrid(newPos);
+            newPos = grid.SnapToGrid(newPos);
         }
 
         // スペースキー押したら
@@ -88,8 +87,8 @@ public class Player : MonoBehaviour
             {
                 // 回転を反転
                 turnRight *= -1;
-                // 角に到達したタイルを保存
-                currentTile = innerTile;
+                // 現在のタイルを選択
+                SelectCurrentCell(innerCell);
             }
         }
 
