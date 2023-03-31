@@ -19,9 +19,13 @@ public class Player : MonoBehaviour
     // 現在のタイル
     private TileBase currentTile;
     // 現在の向き
-    private Vector2Int direction = Vector2Int.right;
+    private Vector2Int moveDirection = Vector2Int.right;
     // 回転方向
     private int turnRight = 1;
+    // 向きが変わったか
+    private bool isTurn = false;
+    // 基準点
+    private Vector3 basePosition;
 
     // directionを回転する
     private Vector2Int Rotate90(Vector2Int direction, int turnRight)
@@ -33,7 +37,7 @@ public class Player : MonoBehaviour
     // サイドのタイルを取得する
     private Vector3Int GetSideCell(Vector3 position, int turnRight)
     {
-        var offset = ((Vector3)(Vector3Int)Rotate90(direction, turnRight)) * (grid.baseGrid.cellSize.magnitude / 2f);
+        var offset = ((Vector3)(Vector3Int)Rotate90(moveDirection, turnRight)) * (grid.baseGrid.cellSize.magnitude / 2f);
         var pos = grid.baseGrid.WorldToCell(position + offset);
         return pos;
     }
@@ -58,36 +62,58 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 新しい位置
-        var oldPos = transform.position;
-        var newPos = oldPos + new Vector3(direction.x, direction.y, 0) * (Time.deltaTime * speed);
+        // 現在のフレーム
+        var nowPos = transform.position;
+        Vector3Int nowInnerCell = GetSideCell(nowPos, turnRight);
 
-        // 内側、外側
-        Vector3Int innerCell = GetSideCell(newPos, turnRight);
+        // 次回のフレーム
+        var pos = nowPos + new Vector3(moveDirection.x, moveDirection.y, 0) * (Time.deltaTime * speed);
+        Vector3Int innerCell = GetSideCell(pos, turnRight);
+        Vector3Int outerCell = GetSideCell(pos, -turnRight);
         TileBase innerTile = grid.baseTilemap.GetTile(innerCell);
-        Vector3Int outerCell = GetSideCell(newPos, -turnRight);
         TileBase outerTile = grid.baseTilemap.GetTile(outerCell);
+        Vector2Int innerSideDirection = Rotate90(moveDirection, turnRight);
+        Vector2Int outerSideDirection = Rotate90(moveDirection, -turnRight);
+
+        // 新しいマスに移動しているか
+        if (!isTurn && grid.baseGrid.WorldToCell(nowPos) != grid.baseGrid.WorldToCell(pos))
+        {
+            // 残り続ける線を追加
+            line.DrawLine((Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
+
+            // 基準点を設定
+            basePosition = grid.SnapToGrid(pos);
+        }
+        else
+        {
+            // 距離を％に変換
+            float cellSize = moveDirection.x != 0 ? grid.baseGrid.cellSize.x : grid.baseGrid.cellSize.y;
+            float partialPercent = Vector3.Distance(pos, basePosition) / cellSize;
+
+            // 部分的に線を追加
+            line.DrawLinePartial((Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
+        }
 
         // 内側の角に到達したら
+        isTurn = false;
         if (currentTile != innerTile)
         {
             // 90度向きを変える
-            direction = Rotate90(direction, turnRight);
+            moveDirection = innerSideDirection;
             // 向いていない方向をマスにスナップする
-            newPos = grid.SnapToGrid(newPos);
+            pos = grid.SnapToGrid(pos);
+            // 向きが変わった
+            isTurn = true;
         }
         // 外側の角に到達したら
         else if (currentTile == outerTile)
         {
             // 90度向きを変える
-            direction = Rotate90(direction, -turnRight);
+            moveDirection = outerSideDirection;
             // 向いていない方向をマスにスナップする
-            newPos = grid.SnapToGrid(newPos);
-        }
-        else
-        {
-            // 内側に線を追加する
-            line.DrawLine((Vector2Int)innerCell, Rotate90(direction, -turnRight));
+            pos = grid.SnapToGrid(pos);
+            // 向きが変わった
+            isTurn = true;
         }
 
         // スペースキー押したら
@@ -103,6 +129,6 @@ public class Player : MonoBehaviour
         }
 
         // 新しい位置を反映
-        transform.position = newPos;
+        transform.position = pos;
     }
 }
