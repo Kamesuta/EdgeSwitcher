@@ -39,13 +39,13 @@ public class GridSystem : MonoBehaviour
     }
 
     // 隣接するタイルの塊を取得する
-    private HashSet<Vector3Int> GetTileCluster(TileBase tile, Vector3Int basePosition)
+    private HashSet<Vector3Int> GetTileCluster(Vector3Int basePosition, TileBase selectTile)
     {
         // 探索済みのタイル
         var searched = new HashSet<Vector3Int>();
 
         // ベース場所のタイルが一致しているか
-        if (baseTilemap.GetTile(basePosition) != tile)
+        if (baseTilemap.GetTile(basePosition) != selectTile)
         {
             return searched;
         }
@@ -69,7 +69,7 @@ public class GridSystem : MonoBehaviour
                 {
                     continue;
                 }
-                if (baseTilemap.GetTile(nextPos) == tile)
+                if (baseTilemap.GetTile(nextPos) == selectTile)
                 {
                     search.Enqueue(nextPos);
                 }
@@ -81,15 +81,15 @@ public class GridSystem : MonoBehaviour
     }
 
     // タイルの塊を選択する
-    public void SelectCluster(TileBase tile, Vector3Int basePosition)
+    public void SelectCluster(Vector3Int basePosition, TileBase selectTile, PaintTileSet paint)
     {
         // タイルの塊を取得
-        var cluster = GetTileCluster(tile, basePosition);
+        var cluster = GetTileCluster(basePosition, selectTile);
         // オーバーレイを設定
         overlayTilemap.ClearAllTiles();
         foreach (var pos in cluster)
         {
-            overlayTilemap.SetTile(pos, tile);
+            overlayTilemap.SetTile(pos, paint.overlay);
         }
     }
 }

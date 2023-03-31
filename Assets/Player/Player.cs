@@ -16,6 +16,9 @@ public class Player : MonoBehaviour
     // 速度
     public float speed = 1.0f;
 
+    // ユーザーのペイントセット
+    public PaintTileSet paint;
+
     // 現在のタイル
     private TileBase currentTile;
     // 現在の向き
@@ -33,7 +36,7 @@ public class Player : MonoBehaviour
         // 角に到達したタイルを保存
         currentTile = grid.baseTilemap.GetTile(cell);
         // 乗っているタイルの塊を選択する
-        grid.SelectCluster(currentTile, cell);
+        grid.SelectCluster(cell, currentTile, paint);
     }
 
     // Start is called before the first frame update
@@ -66,7 +69,7 @@ public class Player : MonoBehaviour
         if (!isTurn && grid.baseGrid.WorldToCell(nowPos) != grid.baseGrid.WorldToCell(pos))
         {
             // 残り続ける線を追加
-            line.DrawLine((Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
+            line.DrawLine(paint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
 
             // 基準点を設定
             basePosition = grid.SnapToGrid(pos);
@@ -78,7 +81,7 @@ public class Player : MonoBehaviour
             float partialPercent = Vector3.Distance(pos, basePosition) / cellSize;
 
             // 部分的に線を追加
-            line.DrawLinePartial((Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
+            line.DrawLinePartial(paint, (Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
         }
 
         // 内側の角に到達したら

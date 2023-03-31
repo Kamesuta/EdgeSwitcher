@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98a031c02089dfe4ebe04f81eb3edcff, type: 3}
+  m_Name: RedPaint
+  m_EditorClassIdentifier: 
+  lineHorizontal: {fileID: 11400000, guid: 0a48fbbd082d2e048ad27fbac47e17db, type: 2}
+  lineVertical: {fileID: 11400000, guid: c9d4735c65fffd34a8b073e49166e7c1, type: 2}
+  overlay: {fileID: 11400000, guid: fb5cb5d2f2d9bbe41bef475de2c62127, type: 2}
