@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// グリッド、タイル関係操作
 public class GridSystem : MonoBehaviour
 {
     // グリッド
@@ -13,6 +14,21 @@ public class GridSystem : MonoBehaviour
 
     // オーバーレイタイルマップ
     public Tilemap overlayTilemap;
+
+    // directionを回転する
+    public Vector2Int Rotate90(Vector2Int direction, int turnRight)
+    {
+        // 90度回転させる
+        return new Vector2Int(direction.y, -direction.x) * turnRight;
+    }
+
+    // サイドのタイルを取得する
+    public Vector3Int GetSideCell(Vector3 position, Vector2Int sideDirection)
+    {
+        var offset = ((Vector3)(Vector3Int)sideDirection) * (baseGrid.cellSize.magnitude / 2f);
+        var pos = baseGrid.WorldToCell(position + offset);
+        return pos;
+    }
 
     // マスにスナップする
     public Vector3 SnapToGrid(Vector3 position)

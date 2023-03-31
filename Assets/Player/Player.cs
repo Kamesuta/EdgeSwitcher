@@ -27,21 +27,6 @@ public class Player : MonoBehaviour
     // 基準点
     private Vector3 basePosition;
 
-    // directionを回転する
-    private Vector2Int Rotate90(Vector2Int direction, int turnRight)
-    {
-        // 90度回転させる
-        return new Vector2Int(direction.y, -direction.x) * turnRight;
-    }
-
-    // サイドのタイルを取得する
-    private Vector3Int GetSideCell(Vector3 position, int turnRight)
-    {
-        var offset = ((Vector3)(Vector3Int)Rotate90(moveDirection, turnRight)) * (grid.baseGrid.cellSize.magnitude / 2f);
-        var pos = grid.baseGrid.WorldToCell(position + offset);
-        return pos;
-    }
-
     // 現在のセルを選択
     private void SelectCurrentCell(Vector3Int cell)
     {
@@ -55,8 +40,9 @@ public class Player : MonoBehaviour
     void Start()
     {
         // 現在のタイルを選択
-        Vector3Int currentCell = GetSideCell(transform.position, turnRight);
-        SelectCurrentCell(currentCell);
+        Vector2Int nowInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
+        Vector3Int nowInnerCell = grid.GetSideCell(transform.position, nowInnerSideDirection);
+        SelectCurrentCell(nowInnerCell);
     }
 
     // Update is called once per frame
@@ -64,16 +50,17 @@ public class Player : MonoBehaviour
     {
         // 現在のフレーム
         var nowPos = transform.position;
-        Vector3Int nowInnerCell = GetSideCell(nowPos, turnRight);
+        Vector2Int nowInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
+        Vector3Int nowInnerCell = grid.GetSideCell(nowPos, nowInnerSideDirection);
 
         // 次回のフレーム
         var pos = nowPos + new Vector3(moveDirection.x, moveDirection.y, 0) * (Time.deltaTime * speed);
-        Vector3Int innerCell = GetSideCell(pos, turnRight);
-        Vector3Int outerCell = GetSideCell(pos, -turnRight);
+        Vector2Int innerSideDirection = grid.Rotate90(moveDirection, turnRight);
+        Vector2Int outerSideDirection = grid.Rotate90(moveDirection, -turnRight);
+        Vector3Int innerCell = grid.GetSideCell(pos, innerSideDirection);
+        Vector3Int outerCell = grid.GetSideCell(pos, outerSideDirection);
         TileBase innerTile = grid.baseTilemap.GetTile(innerCell);
         TileBase outerTile = grid.baseTilemap.GetTile(outerCell);
-        Vector2Int innerSideDirection = Rotate90(moveDirection, turnRight);
-        Vector2Int outerSideDirection = Rotate90(moveDirection, -turnRight);
 
         // 新しいマスに移動しているか
         if (!isTurn && grid.baseGrid.WorldToCell(nowPos) != grid.baseGrid.WorldToCell(pos))
