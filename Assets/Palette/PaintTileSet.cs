@@ -7,11 +7,24 @@ using UnityEngine.Tilemaps;
 public class PaintTileSet : ScriptableObject
 {
     // 横タイル
-    public TileBase lineHorizontal;
+    public Tile lineHorizontal;
 
     // 縦タイル
-    public TileBase lineVertical;
+    public Tile lineVertical;
 
     // オーバーレイタイル
-    public TileBase overlay;
+    public Tile overlay;
+
+    // 色付き
+    public PaintTileSet CreateColored(Color color)
+    {
+        var clone = CreateInstance<PaintTileSet>();
+        clone.lineHorizontal = Instantiate(lineHorizontal);
+        clone.lineVertical = Instantiate(lineVertical);
+        clone.overlay = Instantiate(overlay);
+        clone.lineHorizontal.color = color;
+        clone.lineVertical.color = color;
+        clone.overlay.color = color;
+        return clone;
+    }
 }

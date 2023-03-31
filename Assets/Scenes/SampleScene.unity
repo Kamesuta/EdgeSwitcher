@@ -402,6 +402,7 @@ MonoBehaviour:
   line: {fileID: 1236200596}
   speed: 1
   paint: {fileID: 11400000, guid: 1c34667c227fba04c8e6f4effaaf6f0c, type: 2}
+  color: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,10 @@ public class Player : MonoBehaviour
 
     // ユーザーのペイントセット
     public PaintTileSet paint;
+    // 色
+    public Color color;
+    // 色付きペイントセット
+    private PaintTileSet coloredPaint;
 
     // 現在のタイル
     private TileBase currentTile;
@@ -36,12 +40,15 @@ public class Player : MonoBehaviour
         // 角に到達したタイルを保存
         currentTile = grid.baseTilemap.GetTile(cell);
         // 乗っているタイルの塊を選択する
-        grid.SelectCluster(cell, currentTile, paint);
+        grid.SelectCluster(cell, currentTile, coloredPaint);
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        // 色付きペイントセットを作成
+        coloredPaint = paint.CreateColored(color);
+
         // 現在のタイルを選択
         Vector2Int nowInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
         Vector3Int nowInnerCell = grid.GetSideCell(transform.position, nowInnerSideDirection);
@@ -69,7 +76,7 @@ public class Player : MonoBehaviour
         if (!isTurn && grid.baseGrid.WorldToCell(nowPos) != grid.baseGrid.WorldToCell(pos))
         {
             // 残り続ける線を追加
-            line.DrawLine(paint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
+            line.DrawLine(coloredPaint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
 
             // 基準点を設定
             basePosition = grid.SnapToGrid(pos);
@@ -81,7 +88,7 @@ public class Player : MonoBehaviour
             float partialPercent = Vector3.Distance(pos, basePosition) / cellSize;
 
             // 部分的に線を追加
-            line.DrawLinePartial(paint, (Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
+            line.DrawLinePartial(coloredPaint, (Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
         }
 
         // 内側の角に到達したら
