@@ -1,31 +1,31 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-// ƒOƒŠƒbƒhAƒ^ƒCƒ‹ŠÖŒW‘€ì
+// ã‚°ãƒªãƒƒãƒ‰ã€ã‚¿ã‚¤ãƒ«é–¢ä¿‚æ“ä½œ
 public class GridSystem : MonoBehaviour
 {
-    // ƒOƒŠƒbƒh
+    // ã‚°ãƒªãƒƒãƒ‰
     public Grid baseGrid;
 
-    // ƒ^ƒCƒ‹ƒ}ƒbƒv
+    // ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—
     public Tilemap baseTilemap;
 
-    // ƒI[ƒo[ƒŒƒCƒ^ƒCƒ‹ƒ}ƒbƒv
+    // ã‚ªãƒ¼ãƒãƒ¼ãƒ¬ã‚¤ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—
     public Tilemap overlayTilemap;
 
-    // ƒ‰ƒCƒ“ƒOƒŠƒbƒh
+    // ãƒ©ã‚¤ãƒ³ã‚°ãƒªãƒƒãƒ‰
     public LineGridSystem line;
 
-    // direction‚ğ‰ñ“]‚·‚é
+    // directionã‚’å›è»¢ã™ã‚‹
     public Vector2Int Rotate90(Vector2Int direction, int turnRight)
     {
-        // 90“x‰ñ“]‚³‚¹‚é
+        // 90åº¦å›è»¢ã•ã›ã‚‹
         return new Vector2Int(direction.y, -direction.x) * turnRight;
     }
 
-    // ƒTƒCƒh‚Ìƒ^ƒCƒ‹‚ğæ“¾‚·‚é
+    // ã‚µã‚¤ãƒ‰ã®ã‚¿ã‚¤ãƒ«ã‚’å–å¾—ã™ã‚‹
     public Vector3Int GetSideCell(Vector3 position, Vector2Int sideDirection)
     {
         var offset = ((Vector3)(Vector3Int)sideDirection) * (baseGrid.cellSize.magnitude / 2f);
@@ -33,7 +33,7 @@ public class GridSystem : MonoBehaviour
         return pos;
     }
 
-    // ƒ}ƒX‚ÉƒXƒiƒbƒv‚·‚é
+    // ãƒã‚¹ã«ã‚¹ãƒŠãƒƒãƒ—ã™ã‚‹
     public Vector3 SnapToGrid(Vector3 position)
     {
         position.x = Mathf.Round(position.x / baseGrid.cellSize.x) * baseGrid.cellSize.x;
@@ -41,26 +41,26 @@ public class GridSystem : MonoBehaviour
         return position;
     }
 
-    // —×Ú‚·‚éƒ^ƒCƒ‹‚Ì‰ò‚ğæ“¾‚·‚é
+    // éš£æ¥ã™ã‚‹ã‚¿ã‚¤ãƒ«ã®å¡Šã‚’å–å¾—ã™ã‚‹
     private HashSet<Vector3Int> GetTileCluster(Vector3Int basePosition, TileBase selectTile)
     {
-        // ’TõÏ‚İ‚Ìƒ^ƒCƒ‹
+        // æ¢ç´¢æ¸ˆã¿ã®ã‚¿ã‚¤ãƒ«
         var searched = new HashSet<Vector3Int>();
 
-        // ƒx[ƒXêŠ‚Ìƒ^ƒCƒ‹‚ªˆê’v‚µ‚Ä‚¢‚é‚©
+        // ãƒ™ãƒ¼ã‚¹å ´æ‰€ã®ã‚¿ã‚¤ãƒ«ãŒä¸€è‡´ã—ã¦ã„ã‚‹ã‹
         if (baseTilemap.GetTile(basePosition) != selectTile)
         {
             return searched;
         }
 
-        // ’Tõ‚·‚éƒ^ƒCƒ‹
+        // æ¢ç´¢ã™ã‚‹ã‚¿ã‚¤ãƒ«
         var search = new Queue<Vector3Int>();
         search.Enqueue(basePosition);
 
-        // ’Tõ‚·‚éƒIƒtƒZƒbƒgW
+        // æ¢ç´¢ã™ã‚‹ã‚ªãƒ•ã‚»ãƒƒãƒˆé›†
         Vector3Int[] offsets = new Vector3Int[] { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
 
-        // ’Tõ‚·‚é
+        // æ¢ç´¢ã™ã‚‹
         while (search.Count > 0)
         {
             var pos = search.Dequeue();
@@ -79,16 +79,16 @@ public class GridSystem : MonoBehaviour
             }
         }
 
-        // ’TõÏ‚İ‚Ìƒ^ƒCƒ‹‚ğ•Ô‚·
+        // æ¢ç´¢æ¸ˆã¿ã®ã‚¿ã‚¤ãƒ«ã‚’è¿”ã™
         return searched;
     }
 
-    // ƒ^ƒCƒ‹‚Ì‰ò‚ğ‘I‘ğ‚·‚é
+    // ã‚¿ã‚¤ãƒ«ã®å¡Šã‚’é¸æŠã™ã‚‹
     public void SelectCluster(Vector3Int basePosition, TileBase selectTile, PaintTileSet paint)
     {
-        // ƒ^ƒCƒ‹‚Ì‰ò‚ğæ“¾
+        // ã‚¿ã‚¤ãƒ«ã®å¡Šã‚’å–å¾—
         var cluster = GetTileCluster(basePosition, selectTile);
-        // ƒI[ƒo[ƒŒƒC‚ğİ’è
+        // ã‚ªãƒ¼ãƒãƒ¼ãƒ¬ã‚¤ã‚’è¨­å®š
         overlayTilemap.ClearAllTiles();
         foreach (var pos in cluster)
         {

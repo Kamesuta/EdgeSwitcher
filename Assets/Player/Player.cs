@@ -1,63 +1,63 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
-// ƒvƒŒƒCƒ„[
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
 {
-    // ƒOƒŠƒbƒh
+    // ã‚°ãƒªãƒƒãƒ‰
     private GridSystem grid;
 
-    // ‘¬“x
+    // é€Ÿåº¦
     public float speed = 1.0f;
 
-    // ƒ†[ƒU[‚ÌƒyƒCƒ“ƒgƒZƒbƒg
+    // ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®ãƒšã‚¤ãƒ³ãƒˆã‚»ãƒƒãƒˆ
     public PaintTileSet paint;
-    // F
+    // è‰²
     public Color color;
-    // F•t‚«ƒyƒCƒ“ƒgƒZƒbƒg
+    // è‰²ä»˜ããƒšã‚¤ãƒ³ãƒˆã‚»ãƒƒãƒˆ
     private PaintTileSet coloredPaint;
 
-    // “r’†ƒ^ƒCƒ‹ƒ}ƒbƒv
+    // é€”ä¸­ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—
     [field: SerializeField]
     public Tilemap PartialTilemap { get; set; }
 
-    // “r’†ƒ^ƒCƒ‹ƒ}ƒbƒvƒ}ƒXƒN
+    // é€”ä¸­ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ãƒã‚¹ã‚¯
     [field: SerializeField]
     public Transform PartialMask { get; set; }
 
-    // Œ»İ‚Ìƒ^ƒCƒ‹
+    // ç¾åœ¨ã®ã‚¿ã‚¤ãƒ«
     private TileBase currentTile;
-    // Œ»İ‚ÌŒü‚«
+    // ç¾åœ¨ã®å‘ã
     private Vector2Int moveDirection = Vector2Int.right;
-    // ‰ñ“]•ûŒü
+    // å›è»¢æ–¹å‘
     private int turnRight = 1;
-    // Œü‚«‚ª•Ï‚í‚Á‚½‚©
+    // å‘ããŒå¤‰ã‚ã£ãŸã‹
     private bool isTurn = false;
-    // Šî€“_
+    // åŸºæº–ç‚¹
     private Vector3 basePosition;
 
-    // Œ»İ‚ÌƒZƒ‹‚ğ‘I‘ğ
+    // ç¾åœ¨ã®ã‚»ãƒ«ã‚’é¸æŠ
     private void SelectCurrentCell(Vector3Int cell)
     {
-        // Šp‚É“’B‚µ‚½ƒ^ƒCƒ‹‚ğ•Û‘¶
+        // è§’ã«åˆ°é”ã—ãŸã‚¿ã‚¤ãƒ«ã‚’ä¿å­˜
         currentTile = grid.baseTilemap.GetTile(cell);
-        // æ‚Á‚Ä‚¢‚éƒ^ƒCƒ‹‚Ì‰ò‚ğ‘I‘ğ‚·‚é
+        // ä¹—ã£ã¦ã„ã‚‹ã‚¿ã‚¤ãƒ«ã®å¡Šã‚’é¸æŠã™ã‚‹
         grid.SelectCluster(cell, currentTile, coloredPaint);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        // ƒOƒŠƒbƒhæ“¾
+        // ã‚°ãƒªãƒƒãƒ‰å–å¾—
         grid = GetComponentInParent<GridSystem>();
 
-        // F•t‚«ƒyƒCƒ“ƒgƒZƒbƒg‚ğì¬
+        // è‰²ä»˜ããƒšã‚¤ãƒ³ãƒˆã‚»ãƒƒãƒˆã‚’ä½œæˆ
         coloredPaint = paint.CreateColored(color);
 
-        // Œ»İ‚Ìƒ^ƒCƒ‹‚ğ‘I‘ğ
+        // ç¾åœ¨ã®ã‚¿ã‚¤ãƒ«ã‚’é¸æŠ
         Vector2Int nowInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
         Vector3Int nowInnerCell = grid.GetSideCell(transform.position, nowInnerSideDirection);
         SelectCurrentCell(nowInnerCell);
@@ -66,12 +66,12 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     // Update is called once per frame
     void Update()
     {
-        // Œ»İ‚ÌƒtƒŒ[ƒ€
+        // ç¾åœ¨ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
         var nowPos = transform.position;
         Vector2Int nowInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
         Vector3Int nowInnerCell = grid.GetSideCell(nowPos, nowInnerSideDirection);
 
-        // Ÿ‰ñ‚ÌƒtƒŒ[ƒ€
+        // æ¬¡å›ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
         var pos = nowPos + new Vector3(moveDirection.x, moveDirection.y, 0) * (Time.deltaTime * speed);
         Vector2Int innerSideDirection = grid.Rotate90(moveDirection, turnRight);
         Vector2Int outerSideDirection = grid.Rotate90(moveDirection, -turnRight);
@@ -80,60 +80,60 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
         TileBase innerTile = grid.baseTilemap.GetTile(innerCell);
         TileBase outerTile = grid.baseTilemap.GetTile(outerCell);
 
-        // V‚µ‚¢ƒ}ƒX‚ÉˆÚ“®‚µ‚Ä‚¢‚é‚©
+        // æ–°ã—ã„ãƒã‚¹ã«ç§»å‹•ã—ã¦ã„ã‚‹ã‹
         if (!isTurn && grid.baseGrid.WorldToCell(nowPos) != grid.baseGrid.WorldToCell(pos))
         {
-            // c‚è‘±‚¯‚éü‚ğ’Ç‰Á
+            // æ®‹ã‚Šç¶šã‘ã‚‹ç·šã‚’è¿½åŠ 
             grid.line.DrawLine(coloredPaint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
 
-            // Šî€“_‚ğİ’è
+            // åŸºæº–ç‚¹ã‚’è¨­å®š
             basePosition = grid.SnapToGrid(pos);
         }
         else
         {
-            // ‹——£‚ğ“‚É•ÏŠ·
+            // è·é›¢ã‚’ï¼…ã«å¤‰æ›
             float cellSize = moveDirection.x != 0 ? grid.baseGrid.cellSize.x : grid.baseGrid.cellSize.y;
             float partialPercent = Vector3.Distance(pos, basePosition) / cellSize;
 
-            // •”•ª“I‚Éü‚ğ’Ç‰Á
+            // éƒ¨åˆ†çš„ã«ç·šã‚’è¿½åŠ 
             grid.line.DrawLinePartial(this, coloredPaint, (Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
         }
 
-        // “à‘¤‚ÌŠp‚É“’B‚µ‚½‚ç
+        // å†…å´ã®è§’ã«åˆ°é”ã—ãŸã‚‰
         isTurn = false;
         if (currentTile != innerTile)
         {
-            // 90“xŒü‚«‚ğ•Ï‚¦‚é
+            // 90åº¦å‘ãã‚’å¤‰ãˆã‚‹
             moveDirection = innerSideDirection;
-            // Œü‚¢‚Ä‚¢‚È‚¢•ûŒü‚ğƒ}ƒX‚ÉƒXƒiƒbƒv‚·‚é
+            // å‘ã„ã¦ã„ãªã„æ–¹å‘ã‚’ãƒã‚¹ã«ã‚¹ãƒŠãƒƒãƒ—ã™ã‚‹
             pos = grid.SnapToGrid(pos);
-            // Œü‚«‚ª•Ï‚í‚Á‚½
+            // å‘ããŒå¤‰ã‚ã£ãŸ
             isTurn = true;
         }
-        // ŠO‘¤‚ÌŠp‚É“’B‚µ‚½‚ç
+        // å¤–å´ã®è§’ã«åˆ°é”ã—ãŸã‚‰
         else if (currentTile == outerTile)
         {
-            // 90“xŒü‚«‚ğ•Ï‚¦‚é
+            // 90åº¦å‘ãã‚’å¤‰ãˆã‚‹
             moveDirection = outerSideDirection;
-            // Œü‚¢‚Ä‚¢‚È‚¢•ûŒü‚ğƒ}ƒX‚ÉƒXƒiƒbƒv‚·‚é
+            // å‘ã„ã¦ã„ãªã„æ–¹å‘ã‚’ãƒã‚¹ã«ã‚¹ãƒŠãƒƒãƒ—ã™ã‚‹
             pos = grid.SnapToGrid(pos);
-            // Œü‚«‚ª•Ï‚í‚Á‚½
+            // å‘ããŒå¤‰ã‚ã£ãŸ
             isTurn = true;
         }
 
-        // ƒXƒy[ƒXƒL[‰Ÿ‚µ‚½‚ç
+        // ã‚¹ãƒšãƒ¼ã‚¹ã‚­ãƒ¼æŠ¼ã—ãŸã‚‰
         if (Input.GetButtonDown("Jump"))
         {
             if (outerTile != null)
             {
-                // ‰ñ“]‚ğ”½“]
+                // å›è»¢ã‚’åè»¢
                 turnRight *= -1;
-                // Œ»İ‚Ìƒ^ƒCƒ‹‚ğ‘I‘ğ
+                // ç¾åœ¨ã®ã‚¿ã‚¤ãƒ«ã‚’é¸æŠ
                 SelectCurrentCell(outerCell);
             }
         }
 
-        // V‚µ‚¢ˆÊ’u‚ğ”½‰f
+        // æ–°ã—ã„ä½ç½®ã‚’åæ˜ 
         transform.position = pos;
     }
 }

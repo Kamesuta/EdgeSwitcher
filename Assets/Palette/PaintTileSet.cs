@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -6,16 +6,16 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(menuName = "PaintTileSet")]
 public class PaintTileSet : ScriptableObject
 {
-    // ‰¡ƒ^ƒCƒ‹
+    // æ¨ªã‚¿ã‚¤ãƒ«
     public Tile lineHorizontal;
 
-    // cƒ^ƒCƒ‹
+    // ç¸¦ã‚¿ã‚¤ãƒ«
     public Tile lineVertical;
 
-    // ƒI[ƒo[ƒŒƒCƒ^ƒCƒ‹
+    // ã‚ªãƒ¼ãƒãƒ¼ãƒ¬ã‚¤ã‚¿ã‚¤ãƒ«
     public Tile overlay;
 
-    // F•t‚«
+    // è‰²ä»˜ã
     public PaintTileSet CreateColored(Color color)
     {
         var clone = CreateInstance<PaintTileSet>();

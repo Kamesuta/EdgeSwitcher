@@ -1,41 +1,41 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-// üŠÖŒW
+// ç·šé–¢ä¿‚
 public class LineGridSystem : MonoBehaviour
 {
-    // ƒOƒŠƒbƒh
+    // ã‚°ãƒªãƒƒãƒ‰
     public Grid baseGrid;
 
-    // ‰¡ƒ^ƒCƒ‹ƒ}ƒbƒv
+    // æ¨ªã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—
     public Tilemap horizontalTilemap;
 
-    // cƒ^ƒCƒ‹ƒ}ƒbƒv
+    // ç¸¦ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—
     public Tilemap verticalTilemap;
 
-    // “r’†ƒ^ƒCƒ‹ƒ}ƒbƒv
+    // é€”ä¸­ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—
     public interface IPartialTilemap
     {
-        // “r’†ƒ^ƒCƒ‹ƒ}ƒbƒv
+        // é€”ä¸­ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—
         public Tilemap PartialTilemap { get; }
 
-        // “r’†ƒ^ƒCƒ‹ƒ}ƒbƒvƒ}ƒXƒN
+        // é€”ä¸­ã‚¿ã‚¤ãƒ«ãƒãƒƒãƒ—ãƒã‚¹ã‚¯
         public Transform PartialMask { get; }
     }
 
-    // ü‚ğ•`‰æ‚·‚é
+    // ç·šã‚’æç”»ã™ã‚‹
     public void DrawLine(PaintTileSet paint, Vector2Int centerCell, Vector2Int moveDirection, Vector2Int sideDirection)
     {
-        // ‰¡ü
+        // æ¨ªç·š
         if (moveDirection.y == 0)
         {
             int sideOffset = (sideDirection.y - 1) / 2;
             var pos = new Vector3Int(centerCell.x, centerCell.y + sideOffset, 0);
             horizontalTilemap.SetTile(pos, paint.lineHorizontal);
         }
-        // cü
+        // ç¸¦ç·š
         if (moveDirection.x == 0)
         {
             int sideOffset = (sideDirection.x - 1) / 2;
@@ -44,15 +44,15 @@ public class LineGridSystem : MonoBehaviour
         }
     }
 
-    // “r’†‚Ìü‚ğ•`‰æ‚·‚é
+    // é€”ä¸­ã®ç·šã‚’æç”»ã™ã‚‹
     public void DrawLinePartial(IPartialTilemap partial, PaintTileSet paint, Vector2Int centerCell, Vector2Int moveDirection, Vector2Int sideDirection, float partialPercent)
     {
-        // “r’†ƒ^ƒCƒ‹‚ÌˆÊ’u
+        // é€”ä¸­ã‚¿ã‚¤ãƒ«ã®ä½ç½®
         Vector3 centerPos = baseGrid.CellToWorld((Vector3Int)centerCell);
-        // ”¼•ªƒOƒŠƒbƒhƒTƒCƒY
+        // åŠåˆ†ã‚°ãƒªãƒƒãƒ‰ã‚µã‚¤ã‚º
         var half = (Vector2)baseGrid.cellSize / 2f;
 
-        // ‰¡ü
+        // æ¨ªç·š
         if (moveDirection.y == 0)
         {
             int sideOffset = (sideDirection.y - 1) / 2;
@@ -62,7 +62,7 @@ public class LineGridSystem : MonoBehaviour
             partial.PartialMask.transform.localPosition = new Vector3(partialPercent * moveDirection.x * half.x - moveOffset, half.y);
             partial.PartialMask.transform.localScale = new Vector3(partialPercent, 1, 1);
         }
-        // cü
+        // ç¸¦ç·š
         if (moveDirection.x == 0)
         {
             int sideOffset = (sideDirection.x - 1) / 2;
