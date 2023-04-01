@@ -15,6 +15,9 @@ public class GridSystem : MonoBehaviour
     // オーバーレイタイルマップ
     public Tilemap overlayTilemap;
 
+    // ライングリッド
+    public LineGridSystem line;
+
     // directionを回転する
     public Vector2Int Rotate90(Vector2Int direction, int turnRight)
     {

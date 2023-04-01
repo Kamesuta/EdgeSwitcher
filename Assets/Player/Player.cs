@@ -5,13 +5,10 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 
 // プレイヤー
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
 {
     // グリッド
-    public GridSystem grid;
-
-    // ライングリッド
-    public LineGridSystem line;
+    private GridSystem grid;
 
     // 速度
     public float speed = 1.0f;
@@ -22,6 +19,14 @@ public class Player : MonoBehaviour
     public Color color;
     // 色付きペイントセット
     private PaintTileSet coloredPaint;
+
+    // 途中タイルマップ
+    [field: SerializeField]
+    public Tilemap PartialTilemap { get; set; }
+
+    // 途中タイルマップマスク
+    [field: SerializeField]
+    public Transform PartialMask { get; set; }
 
     // 現在のタイル
     private TileBase currentTile;
@@ -46,6 +51,9 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // グリッド取得
+        grid = GetComponentInParent<GridSystem>();
+
         // 色付きペイントセットを作成
         coloredPaint = paint.CreateColored(color);
 
@@ -76,7 +84,7 @@ public class Player : MonoBehaviour
         if (!isTurn && grid.baseGrid.WorldToCell(nowPos) != grid.baseGrid.WorldToCell(pos))
         {
             // 残り続ける線を追加
-            line.DrawLine(coloredPaint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
+            grid.line.DrawLine(coloredPaint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
 
             // 基準点を設定
             basePosition = grid.SnapToGrid(pos);
@@ -88,7 +96,7 @@ public class Player : MonoBehaviour
             float partialPercent = Vector3.Distance(pos, basePosition) / cellSize;
 
             // 部分的に線を追加
-            line.DrawLinePartial(coloredPaint, (Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
+            grid.line.DrawLinePartial(this, coloredPaint, (Vector2Int)innerCell, moveDirection, outerSideDirection, partialPercent);
         }
 
         // 内側の角に到達したら

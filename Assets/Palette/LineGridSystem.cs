@@ -16,10 +16,14 @@ public class LineGridSystem : MonoBehaviour
     public Tilemap verticalTilemap;
 
     // 途中タイルマップ
-    public Tilemap partialTilemap;
+    public interface IPartialTilemap
+    {
+        // 途中タイルマップ
+        public Tilemap PartialTilemap { get; }
 
-    // 途中タイルマップマスク
-    public Transform partialMask;
+        // 途中タイルマップマスク
+        public Transform PartialMask { get; }
+    }
 
     // 線を描画する
     public void DrawLine(PaintTileSet paint, Vector2Int centerCell, Vector2Int moveDirection, Vector2Int sideDirection)
@@ -41,7 +45,7 @@ public class LineGridSystem : MonoBehaviour
     }
 
     // 途中の線を描画する
-    public void DrawLinePartial(PaintTileSet paint, Vector2Int centerCell, Vector2Int moveDirection, Vector2Int sideDirection, float partialPercent)
+    public void DrawLinePartial(IPartialTilemap partial, PaintTileSet paint, Vector2Int centerCell, Vector2Int moveDirection, Vector2Int sideDirection, float partialPercent)
     {
         // 途中タイルの位置
         Vector3 centerPos = baseGrid.CellToWorld((Vector3Int)centerCell);
@@ -53,20 +57,20 @@ public class LineGridSystem : MonoBehaviour
         {
             int sideOffset = (sideDirection.y - 1) / 2;
             int moveOffset = (moveDirection.x - 1) / 2;
-            partialTilemap.SetTile(Vector3Int.zero, paint.lineHorizontal);
-            partialTilemap.transform.position = centerPos + new Vector3(0, sideOffset + half.y, 0);
-            partialMask.transform.localPosition = new Vector3(partialPercent * moveDirection.x * half.x - moveOffset, half.y);
-            partialMask.transform.localScale = new Vector3(partialPercent, 1, 1);
+            partial.PartialTilemap.SetTile(Vector3Int.zero, paint.lineHorizontal);
+            partial.PartialTilemap.transform.position = centerPos + new Vector3(0, sideOffset + half.y, 0);
+            partial.PartialMask.transform.localPosition = new Vector3(partialPercent * moveDirection.x * half.x - moveOffset, half.y);
+            partial.PartialMask.transform.localScale = new Vector3(partialPercent, 1, 1);
         }
         // 縦線
         if (moveDirection.x == 0)
         {
             int sideOffset = (sideDirection.x - 1) / 2;
             int moveOffset = (moveDirection.y - 1) / 2;
-            partialTilemap.SetTile(Vector3Int.zero, paint.lineVertical);
-            partialTilemap.transform.position = centerPos + new Vector3(sideOffset + half.x, 0, 0);
-            partialMask.transform.localPosition = new Vector3(half.x, partialPercent * moveDirection.y * half.y - moveOffset);
-            partialMask.transform.localScale = new Vector3(1, partialPercent, 1);
+            partial.PartialTilemap.SetTile(Vector3Int.zero, paint.lineVertical);
+            partial.PartialTilemap.transform.position = centerPos + new Vector3(sideOffset + half.x, 0, 0);
+            partial.PartialMask.transform.localPosition = new Vector3(half.x, partialPercent * moveDirection.y * half.y - moveOffset);
+            partial.PartialMask.transform.localScale = new Vector3(1, partialPercent, 1);
         }
     }
 }
