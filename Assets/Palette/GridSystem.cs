@@ -12,9 +12,6 @@ public class GridSystem : MonoBehaviour
     // タイルマップ
     public Tilemap baseTilemap;
 
-    // オーバーレイタイルマップ
-    public Tilemap overlayTilemap;
-
     // ライングリッド
     public LineGridSystem line;
 
@@ -84,7 +81,7 @@ public class GridSystem : MonoBehaviour
     }
 
     // タイルの塊を選択する
-    public void SelectCluster(Vector3Int basePosition, TileBase selectTile, PaintTileSet paint)
+    public void SelectCluster(Tilemap overlayTilemap, Vector3Int basePosition, TileBase selectTile, PaintTileSet paint)
     {
         // タイルの塊を取得
         var cluster = GetTileCluster(basePosition, selectTile);

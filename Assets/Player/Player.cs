@@ -28,6 +28,9 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     [field: SerializeField]
     public Transform PartialMask { get; set; }
 
+    // オーバーレイタイルマップ
+    public Tilemap overlayTilemap;
+
     // 現在のタイル
     private TileBase currentTile;
     // 現在の向き
@@ -45,7 +48,7 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
         // 角に到達したタイルを保存
         currentTile = grid.baseTilemap.GetTile(cell);
         // 乗っているタイルの塊を選択する
-        grid.SelectCluster(cell, currentTile, coloredPaint);
+        grid.SelectCluster(overlayTilemap, cell, currentTile, coloredPaint);
     }
 
     // Start is called before the first frame update
