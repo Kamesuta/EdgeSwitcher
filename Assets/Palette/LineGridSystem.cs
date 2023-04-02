@@ -12,6 +12,9 @@ public class LineGridSystem : MonoBehaviour
     // 線用ハーフサイズタイルマップ
     public Tilemap lineTilemap;
 
+    // コーナー用ハーフサイズタイルマップ
+    public Tilemap cornerTilemap;
+
     // 途中タイルマップ
     public interface IPartialTilemap
     {
@@ -36,6 +39,23 @@ public class LineGridSystem : MonoBehaviour
         {
             var pos = new Vector3Int(centerCell.x * 2 + sideDirection.x, centerCell.y * 2, 0);
             lineTilemap.SetTile(pos, paint.lineVertical);
+        }
+    }
+
+    // コーナーを描画する
+    public void DrawCorner(PaintTileSet paint, Vector2Int centerCell, Vector2Int moveDirection, Vector2Int sideDirection)
+    {
+        // 横線
+        if (moveDirection.y == 0)
+        {
+            var pos = new Vector3Int(centerCell.x * 2 + moveDirection.x, centerCell.y * 2 + sideDirection.y, 0);
+            cornerTilemap.SetTile(pos, paint.lineCorner);
+        }
+        // 縦線
+        if (moveDirection.x == 0)
+        {
+            var pos = new Vector3Int(centerCell.x * 2 + sideDirection.x, centerCell.y * 2 + moveDirection.y, 0);
+            cornerTilemap.SetTile(pos, paint.lineCorner);
         }
     }
 

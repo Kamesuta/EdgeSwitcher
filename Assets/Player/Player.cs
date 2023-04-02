@@ -88,6 +88,8 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
         {
             // 残り続ける線を追加
             grid.line.DrawLine(coloredPaint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
+            // 残り続けるコーナーを追加
+            grid.line.DrawCorner(coloredPaint, (Vector2Int)nowInnerCell, moveDirection, outerSideDirection);
 
             // 基準点を設定
             basePosition = grid.SnapToGrid(pos);

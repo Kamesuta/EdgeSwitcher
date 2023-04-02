@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineHorizontal: {fileID: 11400000, guid: 0a48fbbd082d2e048ad27fbac47e17db, type: 2}
   lineVertical: {fileID: 11400000, guid: c9d4735c65fffd34a8b073e49166e7c1, type: 2}
+  lineCorner: {fileID: 11400000, guid: 773c1627fc33f46498e8c824bcc90e22, type: 2}
   overlay: {fileID: 11400000, guid: fb5cb5d2f2d9bbe41bef475de2c62127, type: 2}

@@ -12,6 +12,9 @@ public class PaintTileSet : ScriptableObject
     // 縦タイル
     public Tile lineVertical;
 
+    // コーナータイル
+    public Tile lineCorner;
+
     // オーバーレイタイル
     public Tile overlay;
 
@@ -20,10 +23,12 @@ public class PaintTileSet : ScriptableObject
     {
         var clone = CreateInstance<PaintTileSet>();
         clone.lineHorizontal = Instantiate(lineHorizontal);
-        clone.lineVertical = Instantiate(lineVertical);
-        clone.overlay = Instantiate(overlay);
         clone.lineHorizontal.color = color;
+        clone.lineVertical = Instantiate(lineVertical);
         clone.lineVertical.color = color;
+        clone.lineCorner = Instantiate(lineCorner);
+        clone.lineCorner.color = color;
+        clone.overlay = Instantiate(overlay);
         clone.overlay.color = color;
         return clone;
     }
