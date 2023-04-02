@@ -9,11 +9,8 @@ public class LineGridSystem : MonoBehaviour
     // グリッド
     public Grid baseGrid;
 
-    // 横タイルマップ
-    public Tilemap horizontalTilemap;
-
-    // 縦タイルマップ
-    public Tilemap verticalTilemap;
+    // 線用ハーフサイズタイルマップ
+    public Tilemap lineTilemap;
 
     // 途中タイルマップ
     public interface IPartialTilemap
@@ -31,16 +28,14 @@ public class LineGridSystem : MonoBehaviour
         // 横線
         if (moveDirection.y == 0)
         {
-            int sideOffset = (sideDirection.y - 1) / 2;
-            var pos = new Vector3Int(centerCell.x, centerCell.y + sideOffset, 0);
-            horizontalTilemap.SetTile(pos, paint.lineHorizontal);
+            var pos = new Vector3Int(centerCell.x * 2, centerCell.y * 2 + sideDirection.y, 0);
+            lineTilemap.SetTile(pos, paint.lineHorizontal);
         }
         // 縦線
         if (moveDirection.x == 0)
         {
-            int sideOffset = (sideDirection.x - 1) / 2;
-            var pos = new Vector3Int(centerCell.x + sideOffset, centerCell.y, 0);
-            verticalTilemap.SetTile(pos, paint.lineVertical);
+            var pos = new Vector3Int(centerCell.x * 2 + sideDirection.x, centerCell.y * 2, 0);
+            lineTilemap.SetTile(pos, paint.lineVertical);
         }
     }
 
