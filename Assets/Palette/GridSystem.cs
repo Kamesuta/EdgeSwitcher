@@ -15,6 +15,9 @@ public class GridSystem : MonoBehaviour
     // ライングリッド
     public LineGridSystem line;
 
+    // エフェクト用白タイル
+    public TileBase effectTilebase;
+
     // directionを回転する
     public Vector2Int Rotate90(Vector2Int direction, int turnRight)
     {
@@ -39,7 +42,7 @@ public class GridSystem : MonoBehaviour
     }
 
     // 隣接するタイルの塊を取得する
-    private HashSet<Vector3Int> GetTileCluster(Vector3Int basePosition, TileBase selectTile)
+    public HashSet<Vector3Int> GetTileCluster(Vector3Int basePosition, TileBase selectTile)
     {
         // 探索済みのタイル
         var searched = new HashSet<Vector3Int>();
@@ -81,15 +84,13 @@ public class GridSystem : MonoBehaviour
     }
 
     // タイルの塊を選択する
-    public void SelectCluster(Tilemap overlayTilemap, Vector3Int basePosition, TileBase selectTile, PaintTileSet paint)
+    public void SelectCluster(Tilemap overlayTilemap, HashSet<Vector3Int> cluster, TileBase paint)
     {
-        // タイルの塊を取得
-        var cluster = GetTileCluster(basePosition, selectTile);
         // オーバーレイを設定
         overlayTilemap.ClearAllTiles();
         foreach (var pos in cluster)
         {
-            overlayTilemap.SetTile(pos, paint.overlay);
+            overlayTilemap.SetTile(pos, paint);
         }
     }
 }

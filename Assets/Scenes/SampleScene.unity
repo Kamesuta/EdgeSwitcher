@@ -759,6 +759,7 @@ MonoBehaviour:
   baseGrid: {fileID: 935286730}
   baseTilemap: {fileID: 1145875684}
   line: {fileID: 2134997760}
+  effectTilebase: {fileID: 11400000, guid: 8d04518b05aadd340a747294c296e285, type: 2}
 --- !u!4 &970374071 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4492625546702321673, guid: f31488c9e2fcfa04ea590023e257f55b, type: 3}
@@ -1435,7 +1436,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4492625546702321673, guid: f31488c9e2fcfa04ea590023e257f55b, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4492625546702321673, guid: f31488c9e2fcfa04ea590023e257f55b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1867,7 +1868,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4492625546702321673, guid: f31488c9e2fcfa04ea590023e257f55b, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4492625546702321673, guid: f31488c9e2fcfa04ea590023e257f55b, type: 3}
       propertyPath: m_LocalPosition.x

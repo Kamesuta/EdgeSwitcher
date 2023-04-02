@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 // プレイヤー
 public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
@@ -31,8 +33,15 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     // オーバーレイタイルマップ
     public Tilemap overlayTilemap;
 
+    // エフェクトタイルマップ
+    public Tilemap effectTilemap;
+    // エフェクトタイルマップアニメーション
+    public Animator effectTilemapAnim;
+
     // 現在のタイル
     private TileBase currentTile;
+    // 現在のタイルの塊
+    private HashSet<Vector3Int> currentCluster;
     // 現在の向き
     private Vector2Int moveDirection = Vector2Int.right;
     // 回転方向
@@ -47,8 +56,10 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     {
         // 角に到達したタイルを保存
         currentTile = grid.baseTilemap.GetTile(cell);
+        // タイルの塊を取得
+        currentCluster = grid.GetTileCluster(cell, currentTile);
         // 乗っているタイルの塊を選択する
-        grid.SelectCluster(overlayTilemap, cell, currentTile, coloredPaint);
+        grid.SelectCluster(overlayTilemap, currentCluster, coloredPaint.overlay);
     }
 
     // Start is called before the first frame update
@@ -93,6 +104,13 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
 
             // 基準点を設定
             basePosition = grid.SnapToGrid(pos);
+
+            // ピカンとエフェクト発光
+            if (grid.line.IsClusterEnclosed(currentCluster, coloredPaint))
+            {
+                grid.SelectCluster(effectTilemap, currentCluster, grid.effectTilebase);
+                effectTilemapAnim.Play("FlashEffect");
+            }
         }
         else
         {
