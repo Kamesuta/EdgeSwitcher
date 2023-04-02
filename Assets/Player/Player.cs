@@ -31,12 +31,17 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     public Transform PartialMask { get; set; }
 
     // オーバーレイタイルマップ
-    public Tilemap overlayTilemap;
+    public Tilemap effectSelectingTilemap;
 
     // エフェクトタイルマップ
     public Tilemap effectTilemap;
     // エフェクトタイルマップアニメーション
     public Animator effectTilemapAnim;
+
+    // タイル収集
+    public Transform effectCollecting;
+    // タイル収集プレハブ
+    public GameObject effectCollectingPrefab;
 
     // 現在のタイル
     private TileBase currentTile;
@@ -59,7 +64,7 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
         // タイルの塊を取得
         currentCluster = grid.GetTileCluster(cell, currentTile);
         // 乗っているタイルの塊を選択する
-        grid.SelectCluster(overlayTilemap, currentCluster, coloredPaint.overlay);
+        grid.SelectCluster(effectSelectingTilemap, currentCluster, coloredPaint.overlay);
     }
 
     // Start is called before the first frame update
@@ -110,6 +115,15 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
             {
                 grid.SelectCluster(effectTilemap, currentCluster, grid.effectTilebase);
                 effectTilemapAnim.Play("FlashEffect");
+
+                // タイルを一つずつオブジェクト化
+                foreach (var cell in currentCluster)
+                {
+                    var tile = grid.baseTilemap.GetTile(cell);
+                    var tilePos = grid.baseGrid.CellToWorld(cell);
+                    var tileObj = Instantiate(effectCollectingPrefab, tilePos, Quaternion.identity, effectCollecting);
+                    tileObj.GetComponent<Tilemap>().SetTile(Vector3Int.zero, tile);
+                }
             }
         }
         else
