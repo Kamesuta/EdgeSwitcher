@@ -56,6 +56,9 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     // 基準点
     private Vector3 basePosition;
 
+    // 手札
+    public Transform hand;
+
     // 現在のセルを選択
     private void SelectCurrentCell(Vector3Int cell)
     {
@@ -119,10 +122,25 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
                 // タイルを一つずつオブジェクト化
                 foreach (var cell in currentCluster)
                 {
+                    // タイルの位置
                     var tile = grid.baseTilemap.GetTile(cell);
                     var tilePos = grid.baseGrid.CellToWorld(cell);
+
+                    // タイルをオブジェクト化
                     var tileObj = Instantiate(effectCollectingPrefab, tilePos, Quaternion.identity, effectCollecting);
+                    // タイルを設定
                     tileObj.GetComponent<Tilemap>().SetTile(Vector3Int.zero, tile);
+
+                    // タイルを手札に移動
+                    var lerp = tileObj.GetComponent<LerpPosition>();
+                    lerp.start = tilePos;
+                    lerp.end = hand.position - grid.baseGrid.cellSize / 2;
+
+                    // タイルのエフェクトを再生
+                    tileObj.GetComponent<Animator>().Play("TakeLerp");
+
+                    // タイルを消す
+                    grid.baseTilemap.SetTile(cell, grid.collectedTile);
                 }
             }
         }

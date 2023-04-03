@@ -18,6 +18,9 @@ public class GridSystem : MonoBehaviour
     // エフェクト用白タイル
     public TileBase effectTilebase;
 
+    // 取得後タイル
+    public TileBase collectedTile;
+
     // directionを回転する
     public Vector2Int Rotate90(Vector2Int direction, int turnRight)
     {
