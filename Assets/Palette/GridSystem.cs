@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEngine.UI.Image;
 
 // グリッド、タイル関係操作
 public class GridSystem : MonoBehaviour
@@ -10,7 +12,10 @@ public class GridSystem : MonoBehaviour
     public Grid baseGrid;
 
     // タイルマップ
-    public Tilemap baseTilemap;
+    public Tilemap foregroundTilemap;
+
+    // タイルマップ
+    public Tilemap backgroundTilemap;
 
     // ライングリッド
     public LineGridSystem line;
@@ -18,8 +23,12 @@ public class GridSystem : MonoBehaviour
     // エフェクト用白タイル
     public TileBase effectTilebase;
 
-    // 取得後タイル
-    public TileBase collectedTile;
+    void Awake()
+    {
+        // タイルマップをコピー
+        var bounds = new BoundsInt(foregroundTilemap.origin, foregroundTilemap.size);
+        backgroundTilemap.SetTilesBlock(bounds, foregroundTilemap.GetTilesBlock(bounds));
+    }
 
     // directionを回転する
     public Vector2Int Rotate90(Vector2Int direction, int turnRight)
@@ -50,8 +59,14 @@ public class GridSystem : MonoBehaviour
         // 探索済みのタイル
         var searched = new HashSet<Vector3Int>();
 
+        // nullタイルは無限に広がるため無視する
+        if (selectTile == null)
+        {
+            return searched;
+        }
+
         // ベース場所のタイルが一致しているか
-        if (baseTilemap.GetTile(basePosition) != selectTile)
+        if (backgroundTilemap.GetTile(basePosition) != selectTile)
         {
             return searched;
         }
@@ -75,7 +90,7 @@ public class GridSystem : MonoBehaviour
                 {
                     continue;
                 }
-                if (baseTilemap.GetTile(nextPos) == selectTile)
+                if (backgroundTilemap.GetTile(nextPos) == selectTile)
                 {
                     search.Enqueue(nextPos);
                 }

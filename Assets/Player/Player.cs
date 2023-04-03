@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 // プレイヤー
 public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
@@ -63,7 +60,7 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     private void SelectCurrentCell(Vector3Int cell)
     {
         // 角に到達したタイルを保存
-        currentTile = grid.baseTilemap.GetTile(cell);
+        currentTile = grid.backgroundTilemap.GetTile(cell);
         // タイルの塊を取得
         currentCluster = grid.GetTileCluster(cell, currentTile);
         // 乗っているタイルの塊を選択する
@@ -99,8 +96,8 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
         Vector2Int outerSideDirection = grid.Rotate90(moveDirection, -turnRight);
         Vector3Int innerCell = grid.GetSideCell(pos, innerSideDirection);
         Vector3Int outerCell = grid.GetSideCell(pos, outerSideDirection);
-        TileBase innerTile = grid.baseTilemap.GetTile(innerCell);
-        TileBase outerTile = grid.baseTilemap.GetTile(outerCell);
+        TileBase innerTile = grid.backgroundTilemap.GetTile(innerCell);
+        TileBase outerTile = grid.backgroundTilemap.GetTile(outerCell);
 
         // 新しいマスに移動しているか
         if (!isTurn && grid.baseGrid.WorldToCell(nowPos) != grid.baseGrid.WorldToCell(pos))
@@ -114,8 +111,10 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
             basePosition = grid.SnapToGrid(pos);
 
             // ピカンとエフェクト発光
-            if (grid.line.IsClusterEnclosed(currentCluster, coloredPaint))
+            var foregroundTile = grid.foregroundTilemap.GetTile(nowInnerCell);
+            if (foregroundTile != null && grid.line.IsClusterEnclosed(currentCluster, coloredPaint))
             {
+                // 光る
                 grid.SelectCluster(effectTilemap, currentCluster, grid.effectTilebase);
                 effectTilemapAnim.Play("FlashEffect");
 
@@ -123,7 +122,7 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
                 foreach (var cell in currentCluster)
                 {
                     // タイルの位置
-                    var tile = grid.baseTilemap.GetTile(cell);
+                    var tile = grid.backgroundTilemap.GetTile(cell);
                     var tilePos = grid.baseGrid.CellToWorld(cell);
 
                     // タイルをオブジェクト化
@@ -140,7 +139,7 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
                     tileObj.GetComponent<Animator>().Play("TakeLerp");
 
                     // タイルを消す
-                    grid.baseTilemap.SetTile(cell, grid.collectedTile);
+                    grid.foregroundTilemap.SetTile(cell, null);
                 }
             }
         }
