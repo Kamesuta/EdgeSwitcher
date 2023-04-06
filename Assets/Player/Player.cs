@@ -53,8 +53,8 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     // 基準点
     private Vector3 basePosition;
 
-    // 手札
-    public Transform hand;
+    // スコアオブジェクト
+    public PlayerScore score;
 
     // 現在のセルを選択
     private void SelectCurrentCell(Vector3Int cell)
@@ -75,6 +75,17 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
 
         // 色付きペイントセットを作成
         coloredPaint = paint.CreateColored(color);
+
+        // 色
+        GetComponent<SpriteRenderer>().color = color;
+
+        // 内側にタイルがない場合は、回転方向を反転
+        Vector2Int testInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
+        Vector3Int testInnerCell = grid.GetSideCell(transform.position, testInnerSideDirection);
+        if (grid.backgroundTilemap.GetTile(testInnerCell) == null)
+        {
+            turnRight = -1;
+        }
 
         // 現在のタイルを選択
         Vector2Int nowInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
@@ -131,9 +142,10 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
                     tileObj.GetComponent<Tilemap>().SetTile(Vector3Int.zero, tile);
 
                     // タイルを手札に移動
-                    var lerp = tileObj.GetComponent<LerpPosition>();
-                    lerp.start = tilePos;
-                    lerp.end = hand.position - grid.baseGrid.cellSize / 2;
+                    var collectingTile = tileObj.GetComponent<CollectingTile>();
+                    collectingTile.start = tilePos;
+                    collectingTile.end = score.transform.position - grid.baseGrid.cellSize / 2;
+                    collectingTile.score = score;
 
                     // タイルのエフェクトを再生
                     tileObj.GetComponent<Animator>().Play("TakeLerp");
