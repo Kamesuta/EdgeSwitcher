@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a5de0bf18b63549bc3467c2c8da68d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 5
   paint: {fileID: 11400000, guid: 1c34667c227fba04c8e6f4effaaf6f0c, type: 2}
   color: {r: 1, g: 1, b: 1, a: 1}
   <PartialTilemap>k__BackingField: {fileID: 4492625547162687387}

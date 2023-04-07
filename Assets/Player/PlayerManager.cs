@@ -10,7 +10,8 @@ public class PlayerManager : MonoBehaviour
     private GridSystem grid;
     public PlayerScoreManager scoreManager;
     public GameObject scorePrefab;
-    private Dictionary<KeyCode, Player> players = new();
+    [HideInInspector]
+    public Dictionary<KeyCode, Player> players = new();
     private bool isPlayerAdd = true;
     public GameObject playerJoinEnabled;
 
@@ -37,6 +38,12 @@ public class PlayerManager : MonoBehaviour
         {
             isPlayerAdd = !isPlayerAdd;
             playerJoinEnabled.SetActive(isPlayerAdd);
+        }
+
+        // シーンリロード
+        if (Input.GetKeyDown(KeyCode.Delete))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         // 全プレイヤーを操作
