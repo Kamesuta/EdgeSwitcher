@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEditor.PlayerSettings;
 
 // プレイヤー
 public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
@@ -187,19 +188,25 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
             isTurn = true;
         }
 
-        // スペースキー押したら
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (outerTile != null)
-            {
-                // 回転を反転
-                turnRight *= -1;
-                // 現在のタイルを選択
-                SelectCurrentCell(outerCell);
-            }
-        }
-
         // 新しい位置を反映
         transform.position = pos;
+    }
+
+    // 反転
+    public void Flip()
+    {
+        // 外側タイルを取得
+        Vector2Int outerSideDirection = grid.Rotate90(moveDirection, -turnRight);
+        Vector3Int outerCell = grid.GetSideCell(transform.position, outerSideDirection);
+        TileBase outerTile = grid.backgroundTilemap.GetTile(outerCell);
+
+        // 反転
+        if (outerTile != null)
+        {
+            // 回転を反転
+            turnRight *= -1;
+            // 現在のタイルを選択
+            SelectCurrentCell(outerCell);
+        }
     }
 }
