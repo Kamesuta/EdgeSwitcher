@@ -19,6 +19,9 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     // 色付きペイントセット
     private PaintTileSet coloredPaint;
 
+    // キャラクタースプライト
+    public SpriteRenderer character;
+
     // 途中タイルマップ
     [field: SerializeField]
     public Tilemap PartialTilemap { get; set; }
@@ -45,9 +48,11 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
     // 現在のタイルの塊
     private HashSet<Vector3Int> currentCluster;
     // 現在の向き
-    private Vector2Int moveDirection = Vector2Int.right;
+    [HideInInspector]
+    public Vector2Int moveDirection = Vector2Int.right;
     // 回転方向
-    private int turnRight = 1;
+    [HideInInspector]
+    public int turnRight = 1;
     // 向きが変わったか
     private bool isTurn = false;
     // 基準点
@@ -77,7 +82,7 @@ public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
         coloredPaint = paint.CreateColored(color);
 
         // 色
-        GetComponent<SpriteRenderer>().color = color;
+        character.color = color;
 
         // 内側にタイルがない場合は、回転方向を反転
         Vector2Int testInnerSideDirection = grid.Rotate90(moveDirection, turnRight);
