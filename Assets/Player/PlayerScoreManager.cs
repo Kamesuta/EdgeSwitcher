@@ -27,7 +27,7 @@ public class PlayerScoreManager : MonoBehaviour
     {
         // ソートする
         var scores = GetComponentsInChildren<PlayerScore>();
-        foreach (var (score, index) in scores.OrderBy(x => x.score).Select((v, i) => (v, i)))
+        foreach (var (score, index) in scores.OrderByDescending(x => x.score).Select((v, i) => (v, i)))
         {
             score.transform.SetSiblingIndex(index);
         }

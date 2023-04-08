@@ -45,4 +45,11 @@ public class PlayerScore : MonoBehaviour
         scoreText.color = color;
         playerNameText.color = color;
     }
+
+    // プレイヤーの番号を設定
+    public void SetPlayerNumber(int number)
+    {
+        playerNumber = number;
+        playerNameText.text = $"{playerNumber}P";
+    }
 }

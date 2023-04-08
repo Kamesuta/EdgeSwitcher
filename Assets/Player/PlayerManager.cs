@@ -93,7 +93,7 @@ public class PlayerManager : MonoBehaviour
         var scoreObj = Instantiate(scorePrefab, scoreManager.transform);
         var score = scoreObj.GetComponent<PlayerScore>();
         score.SetPlayerColor(color);
-        score.playerNumber = index + 1;
+        score.SetPlayerNumber(index + 1);
         scoreManager.SortScores();
 
         // プレイヤーを配置する場所候補

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static UnityEditor.PlayerSettings;
 
 // プレイヤー
 public class Player : MonoBehaviour, LineGridSystem.IPartialTilemap
